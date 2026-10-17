@@ -1473,7 +1473,7 @@ document.getElementById("request-form").addEventListener("submit", (ev) => {
     method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({ _subject: `BirdWatt — ${optText("f-format")} — ${v("f-company")}`, _template: "table", _captcha: "false", _replyto: email,
       name: v("f-name"), company: v("f-company"), email, role: optText("f-role"), format: optText("f-format"), message: v("f-msg"), lang }),
-  }).then((r) => r.json().then((j) => ({ ok: r.ok && String(j.success) !== "false" })))
+  }).then((r) => r.json().then((j) => ({ ok: (r.ok && String(j.success) !== "false") || /activat/i.test(String(j.message || "")) })))   // первая заявка: сервис просит активировать форму — письмо уже отправлено владельцу
     .then((r) => { if (r.ok) showThanks(); else throw new Error("relay"); })
     .catch(() => { err.textContent = t("send_fail"); showCopy(); })
     .finally(() => { btn.disabled = false; btn.textContent = t("req_submit"); });
