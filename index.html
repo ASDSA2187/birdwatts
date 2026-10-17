@@ -361,6 +361,13 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; justify-content
         <select id="f-format"><option value="pilot" data-t="c1_k"></option><option value="subscription" data-t="c2_k"></option><option value="exclusive" data-t="c3_k"></option><option value="investment" data-t="c4_k"></option></select></div>
       <div class="field"><label for="f-msg" data-t="f_msg"></label><textarea id="f-msg" rows="3"></textarea></div>
     </div>
+    <input type="text" id="f-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+    <div id="req-thanks" hidden style="display:flex;flex-direction:column;align-items:flex-start;gap:.7rem;padding:.4rem 0 .2rem">
+      <span style="width:3rem;height:3rem;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb, var(--calm) 14%, transparent);color:var(--calm)">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg></span>
+      <h3 style="font-size:1.3rem" data-t="thx_h"></h3>
+      <p class="muted" style="font-size:.95rem;line-height:1.5" id="thx-p"></p>
+    </div>
     <div id="req-result" hidden style="display:flex;flex-direction:column;gap:.6rem">
       <p style="font-size:.9rem" data-t="req_done"></p>
       <div><span class="eyebrow" data-t="req_to"></span><div class="addr" id="req-addr">—</div></div>
@@ -375,7 +382,8 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; justify-content
 <script>
 /* ---------------- настройки оплаты: заполнить перед запуском ---------------- */
 const CONFIG = {
-  contactEmail: null,       // адрес для запросов, например "partners@birdwatt.example"
+  contactEmail: "fire3d@yahoo.com",   // адрес для заявок (временный; заменить на корпоративный)
+  formRelay: "https://formsubmit.co/ajax/", // бесплатная пересылка заявок с формы на contactEmail (первая заявка придёт с письмом подтверждения)
 };
 
 const T = {
@@ -1221,6 +1229,22 @@ let lang = (() => { const s = store.get("bw_lang"); return s && T[s] ? s : pickL
 let DATA = null;
 const LIVE = location.hash === "#live";   // живые сигналы видны только по ссылке с #live (для показа владельцем)
 const t = (k) => (T[lang] && T[lang][k] !== undefined ? T[lang][k] : T.en[k]);
+const THX = {
+  ru: { thx_h: "Спасибо! Заявка отправлена", thx_p: (e) => "Мы свяжемся с вами в течение одного рабочего дня по адресу " + e + ".", sending: "Отправляем…", send_fail: "Не удалось отправить автоматически. Скопируйте запрос и отправьте его на адрес ниже." },
+  en: { thx_h: "Thank you! Your request has been sent", thx_p: (e) => "We will get back to you within one business day at " + e + ".", sending: "Sending…", send_fail: "Couldn’t send automatically. Copy the request and send it to the address below." },
+  de: { thx_h: "Vielen Dank! Ihre Anfrage wurde gesendet", thx_p: (e) => "Wir melden uns innerhalb eines Werktags unter " + e + ".", sending: "Wird gesendet…", send_fail: "Automatischer Versand fehlgeschlagen. Kopieren Sie die Anfrage und senden Sie sie an die Adresse unten." },
+  nl: { thx_h: "Dank u! Uw aanvraag is verzonden", thx_p: (e) => "We nemen binnen één werkdag contact met u op via " + e + ".", sending: "Bezig met verzenden…", send_fail: "Automatisch verzenden is mislukt. Kopieer de aanvraag en stuur die naar het adres hieronder." },
+  fr: { thx_h: "Merci ! Votre demande a été envoyée", thx_p: (e) => "Nous vous recontacterons sous un jour ouvré à l’adresse " + e + ".", sending: "Envoi…", send_fail: "L’envoi automatique a échoué. Copiez la demande et envoyez-la à l’adresse ci-dessous." },
+  sv: { thx_h: "Tack! Din förfrågan har skickats", thx_p: (e) => "Vi återkommer inom en arbetsdag till " + e + ".", sending: "Skickar…", send_fail: "Det gick inte att skicka automatiskt. Kopiera förfrågan och skicka den till adressen nedan." },
+  pl: { thx_h: "Dziękujemy! Zapytanie zostało wysłane", thx_p: (e) => "Skontaktujemy się w ciągu jednego dnia roboczego pod adresem " + e + ".", sending: "Wysyłanie…", send_fail: "Nie udało się wysłać automatycznie. Skopiuj zapytanie i wyślij je na adres poniżej." },
+  es: { thx_h: "¡Gracias! Su solicitud se ha enviado", thx_p: (e) => "Nos pondremos en contacto en un día laborable en " + e + ".", sending: "Enviando…", send_fail: "No se pudo enviar automáticamente. Copie la solicitud y envíela a la dirección de abajo." },
+  it: { thx_h: "Grazie! La richiesta è stata inviata", thx_p: (e) => "Vi ricontatteremo entro un giorno lavorativo all’indirizzo " + e + ".", sending: "Invio in corso…", send_fail: "Invio automatico non riuscito. Copiate la richiesta e inviatela all’indirizzo qui sotto." },
+  fi: { thx_h: "Kiitos! Pyyntösi on lähetetty", thx_p: (e) => "Otamme yhteyttä yhden arkipäivän kuluessa osoitteeseen " + e + ".", sending: "Lähetetään…", send_fail: "Automaattinen lähetys epäonnistui. Kopioi pyyntö ja lähetä se alla olevaan osoitteeseen." },
+  da: { thx_h: "Tak! Din forespørgsel er sendt", thx_p: (e) => "Vi vender tilbage inden for én arbejdsdag på " + e + ".", sending: "Sender…", send_fail: "Det lykkedes ikke at sende automatisk. Kopiér forespørgslen og send den til adressen nedenfor." },
+  nb: { thx_h: "Takk! Forespørselen er sendt", thx_p: (e) => "Vi tar kontakt innen én arbeidsdag på " + e + ".", sending: "Sender…", send_fail: "Kunne ikke sende automatisk. Kopier forespørselen og send den til adressen nedenfor." },
+  pt: { thx_h: "Obrigado! O seu pedido foi enviado", thx_p: (e) => "Entraremos em contacto no prazo de um dia útil através de " + e + ".", sending: "A enviar…", send_fail: "Não foi possível enviar automaticamente. Copie o pedido e envie-o para o endereço abaixo." },
+};
+Object.entries(THX).forEach(([L, o]) => { if (T[L]) Object.assign(T[L], o); });
 const locale = () => (LANGS.find((l) => l[0] === lang) || LANGS[1])[2];
 const fmt = (n, d = 0) => (n == null ? "—" : new Intl.NumberFormat(locale(), { maximumFractionDigits: d, minimumFractionDigits: d }).format(n));
 const pct = (x) => (x == null ? "—" : `${Math.round(x * 100)}%`);
@@ -1414,6 +1438,7 @@ function openRequest(format) {
   document.getElementById("dlg-request").hidden = false;
   document.getElementById("req-fields").hidden = false; document.getElementById("req-result").hidden = true;
   document.getElementById("f-submit").hidden = false; document.getElementById("f-err").textContent = "";
+  document.getElementById("req-thanks").hidden = true; const rp = document.querySelector("#request-form > p.muted"); if (rp) rp.hidden = false;
   if (format) document.getElementById("f-format").value = format;
   document.getElementById("f-name").focus();
 }
@@ -1427,13 +1452,31 @@ document.getElementById("request-form").addEventListener("submit", (ev) => {
   const optText = (id) => { const s = document.getElementById(id); return s.options[s.selectedIndex].textContent; };
   const text = [`BirdWatt — ${t("req_h")}`, `${t("f_name")}: ${v("f-name")}`, `${t("f_company")}: ${v("f-company")}`, `E-mail: ${email}`,
     `${t("f_role")}: ${optText("f-role")}`, `${t("f_format")}: ${optText("f-format")}`, v("f-msg") ? `${t("f_msg")}: ${v("f-msg")}` : ""].filter(Boolean).join("\n");
+  if (document.getElementById("f-hp").value) return;                          // заполнено ботом
+  const showCopy = () => {
   document.getElementById("req-text").value = text;
   document.getElementById("req-addr").textContent = CONFIG.contactEmail || t("contact_tbd");
   const mail = document.getElementById("req-mail");
   mail.hidden = !CONFIG.contactEmail;
   if (CONFIG.contactEmail) mail.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent("BirdWatt — " + optText("f-format"))}&body=${encodeURIComponent(text)}`;
   document.getElementById("req-fields").hidden = true; document.getElementById("req-result").hidden = false; document.getElementById("f-submit").hidden = true;
-  store.set("bw_request", { at: Date.now() });
+  };
+  const showThanks = () => {
+    document.getElementById("thx-p").textContent = t("thx_p")(email);
+    document.getElementById("req-fields").hidden = true; document.getElementById("req-thanks").hidden = false;
+    document.getElementById("f-submit").hidden = true; document.querySelector("#request-form > p.muted").hidden = true;
+    store.set("bw_request", { at: Date.now() });
+  };
+  if (!CONFIG.contactEmail || !CONFIG.formRelay) { showCopy(); store.set("bw_request", { at: Date.now() }); return; }
+  const btn = document.getElementById("f-submit"); btn.disabled = true; btn.textContent = t("sending");
+  fetch(CONFIG.formRelay + encodeURIComponent(CONFIG.contactEmail), {
+    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ _subject: `BirdWatt — ${optText("f-format")} — ${v("f-company")}`, _template: "table", _captcha: "false", _replyto: email,
+      name: v("f-name"), company: v("f-company"), email, role: optText("f-role"), format: optText("f-format"), message: v("f-msg"), lang }),
+  }).then((r) => r.json().then((j) => ({ ok: r.ok && String(j.success) !== "false" })))
+    .then((r) => { if (r.ok) showThanks(); else throw new Error("relay"); })
+    .catch(() => { err.textContent = t("send_fail"); showCopy(); })
+    .finally(() => { btn.disabled = false; btn.textContent = t("req_submit"); });
 });
 document.getElementById("req-copy").addEventListener("click", () => {
   const ta = document.getElementById("req-text"), err = document.getElementById("f-err");
