@@ -1230,19 +1230,19 @@ let DATA = null;
 const LIVE = location.hash === "#live";   // живые сигналы видны только по ссылке с #live (для показа владельцем)
 const t = (k) => (T[lang] && T[lang][k] !== undefined ? T[lang][k] : T.en[k]);
 const THX = {
-  ru: { thx_h: "Спасибо! Заявка отправлена", thx_p: (e) => "Мы свяжемся с вами в течение одного рабочего дня по адресу " + e + ".", sending: "Отправляем…", send_fail: "Не удалось отправить автоматически. Скопируйте запрос и отправьте его на адрес ниже." },
-  en: { thx_h: "Thank you! Your request has been sent", thx_p: (e) => "We will get back to you within one business day at " + e + ".", sending: "Sending…", send_fail: "Couldn’t send automatically. Copy the request and send it to the address below." },
-  de: { thx_h: "Vielen Dank! Ihre Anfrage wurde gesendet", thx_p: (e) => "Wir melden uns innerhalb eines Werktags unter " + e + ".", sending: "Wird gesendet…", send_fail: "Automatischer Versand fehlgeschlagen. Kopieren Sie die Anfrage und senden Sie sie an die Adresse unten." },
-  nl: { thx_h: "Dank u! Uw aanvraag is verzonden", thx_p: (e) => "We nemen binnen één werkdag contact met u op via " + e + ".", sending: "Bezig met verzenden…", send_fail: "Automatisch verzenden is mislukt. Kopieer de aanvraag en stuur die naar het adres hieronder." },
-  fr: { thx_h: "Merci ! Votre demande a été envoyée", thx_p: (e) => "Nous vous recontacterons sous un jour ouvré à l’adresse " + e + ".", sending: "Envoi…", send_fail: "L’envoi automatique a échoué. Copiez la demande et envoyez-la à l’adresse ci-dessous." },
-  sv: { thx_h: "Tack! Din förfrågan har skickats", thx_p: (e) => "Vi återkommer inom en arbetsdag till " + e + ".", sending: "Skickar…", send_fail: "Det gick inte att skicka automatiskt. Kopiera förfrågan och skicka den till adressen nedan." },
-  pl: { thx_h: "Dziękujemy! Zapytanie zostało wysłane", thx_p: (e) => "Skontaktujemy się w ciągu jednego dnia roboczego pod adresem " + e + ".", sending: "Wysyłanie…", send_fail: "Nie udało się wysłać automatycznie. Skopiuj zapytanie i wyślij je na adres poniżej." },
-  es: { thx_h: "¡Gracias! Su solicitud se ha enviado", thx_p: (e) => "Nos pondremos en contacto en un día laborable en " + e + ".", sending: "Enviando…", send_fail: "No se pudo enviar automáticamente. Copie la solicitud y envíela a la dirección de abajo." },
-  it: { thx_h: "Grazie! La richiesta è stata inviata", thx_p: (e) => "Vi ricontatteremo entro un giorno lavorativo all’indirizzo " + e + ".", sending: "Invio in corso…", send_fail: "Invio automatico non riuscito. Copiate la richiesta e inviatela all’indirizzo qui sotto." },
-  fi: { thx_h: "Kiitos! Pyyntösi on lähetetty", thx_p: (e) => "Otamme yhteyttä yhden arkipäivän kuluessa osoitteeseen " + e + ".", sending: "Lähetetään…", send_fail: "Automaattinen lähetys epäonnistui. Kopioi pyyntö ja lähetä se alla olevaan osoitteeseen." },
-  da: { thx_h: "Tak! Din forespørgsel er sendt", thx_p: (e) => "Vi vender tilbage inden for én arbejdsdag på " + e + ".", sending: "Sender…", send_fail: "Det lykkedes ikke at sende automatisk. Kopiér forespørgslen og send den til adressen nedenfor." },
-  nb: { thx_h: "Takk! Forespørselen er sendt", thx_p: (e) => "Vi tar kontakt innen én arbeidsdag på " + e + ".", sending: "Sender…", send_fail: "Kunne ikke sende automatisk. Kopier forespørselen og send den til adressen nedenfor." },
-  pt: { thx_h: "Obrigado! O seu pedido foi enviado", thx_p: (e) => "Entraremos em contacto no prazo de um dia útil através de " + e + ".", sending: "A enviar…", send_fail: "Não foi possível enviar automaticamente. Copie o pedido e envie-o para o endereço abaixo." },
+  ru: { thx_h: "Запрос на сотрудничество отправлен", thx_p: "Мы ответим вам в ближайшее время.", sending: "Отправляем…", send_fail: "Не получилось отправить — напишите нам:" },
+  en: { thx_h: "Your partnership request has been sent", thx_p: "We will get back to you shortly.", sending: "Sending…", send_fail: "Couldn’t send — please write to us:" },
+  de: { thx_h: "Ihre Anfrage zur Zusammenarbeit wurde gesendet", thx_p: "Wir melden uns in Kürze bei Ihnen.", sending: "Wird gesendet…", send_fail: "Senden fehlgeschlagen — schreiben Sie uns:" },
+  nl: { thx_h: "Uw samenwerkingsaanvraag is verzonden", thx_p: "We nemen binnenkort contact met u op.", sending: "Bezig met verzenden…", send_fail: "Verzenden mislukt — schrijf ons:" },
+  fr: { thx_h: "Votre demande de partenariat a été envoyée", thx_p: "Nous vous répondrons très prochainement.", sending: "Envoi…", send_fail: "Échec de l’envoi — écrivez-nous :" },
+  sv: { thx_h: "Din förfrågan om samarbete har skickats", thx_p: "Vi återkommer inom kort.", sending: "Skickar…", send_fail: "Det gick inte att skicka — skriv till oss:" },
+  pl: { thx_h: "Zapytanie o współpracę zostało wysłane", thx_p: "Odpowiemy wkrótce.", sending: "Wysyłanie…", send_fail: "Nie udało się wysłać — napisz do nas:" },
+  es: { thx_h: "Su solicitud de colaboración se ha enviado", thx_p: "Le responderemos en breve.", sending: "Enviando…", send_fail: "No se pudo enviar — escríbanos:" },
+  it: { thx_h: "La richiesta di collaborazione è stata inviata", thx_p: "Vi risponderemo a breve.", sending: "Invio in corso…", send_fail: "Invio non riuscito — scriveteci:" },
+  fi: { thx_h: "Yhteistyöpyyntösi on lähetetty", thx_p: "Vastaamme sinulle pian.", sending: "Lähetetään…", send_fail: "Lähetys epäonnistui — kirjoita meille:" },
+  da: { thx_h: "Din forespørgsel om samarbejde er sendt", thx_p: "Vi vender tilbage snarest.", sending: "Sender…", send_fail: "Kunne ikke sende — skriv til os:" },
+  nb: { thx_h: "Forespørselen om samarbeid er sendt", thx_p: "Vi svarer deg snart.", sending: "Sender…", send_fail: "Kunne ikke sende — skriv til oss:" },
+  pt: { thx_h: "O seu pedido de parceria foi enviado", thx_p: "Responderemos em breve.", sending: "A enviar…", send_fail: "Não foi possível enviar — escreva-nos:" },
 };
 Object.entries(THX).forEach(([L, o]) => { if (T[L]) Object.assign(T[L], o); });
 const locale = () => (LANGS.find((l) => l[0] === lang) || LANGS[1])[2];
@@ -1462,7 +1462,7 @@ document.getElementById("request-form").addEventListener("submit", (ev) => {
   document.getElementById("req-fields").hidden = true; document.getElementById("req-result").hidden = false; document.getElementById("f-submit").hidden = true;
   };
   const showThanks = () => {
-    document.getElementById("thx-p").textContent = t("thx_p")(email);
+    document.getElementById("thx-p").textContent = t("thx_p");
     document.getElementById("req-fields").hidden = true; document.getElementById("req-thanks").hidden = false;
     document.getElementById("f-submit").hidden = true; document.querySelector("#request-form > p.muted").hidden = true;
     store.set("bw_request", { at: Date.now() });
@@ -1475,7 +1475,9 @@ document.getElementById("request-form").addEventListener("submit", (ev) => {
       name: v("f-name"), company: v("f-company"), email, role: optText("f-role"), format: optText("f-format"), message: v("f-msg"), lang }),
   }).then((r) => r.json().then((j) => ({ ok: (r.ok && String(j.success) !== "false") || /activat/i.test(String(j.message || "")) })))   // первая заявка: сервис просит активировать форму — письмо уже отправлено владельцу
     .then((r) => { if (r.ok) showThanks(); else throw new Error("relay"); })
-    .catch(() => { err.textContent = t("send_fail"); showCopy(); })
+    .catch(() => { err.replaceChildren(document.createTextNode(t("send_fail") + " "));
+      const a = document.createElement("a"); a.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent("BirdWatt — " + optText("f-format"))}&body=${encodeURIComponent(text)}`;
+      a.textContent = CONFIG.contactEmail; a.style.color = "inherit"; err.append(a); })
     .finally(() => { btn.disabled = false; btn.textContent = t("req_submit"); });
 });
 document.getElementById("req-copy").addEventListener("click", () => {
