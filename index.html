@@ -1456,7 +1456,12 @@ function renderBins() {
 
 function renderLog() {
   const box = document.getElementById("loglist"); box.replaceChildren();
-  [...DATA.log].reverse().forEach((r) => {
+  // сверху — ночи с итогом (самые свежие первыми), ниже — ожидающие решения, по одной строке на часть ночи (последний выпуск)
+  const done = DATA.log.filter((r) => r.verdict !== "pending").reverse();
+  const last = {}; DATA.log.filter((r) => r.verdict === "pending").forEach((r) => { if (!last[r.part] || r.issued > last[r.part].issued) last[r.part] = r; });
+  const pend = Object.values(last).sort((a, b) => (a.part.slice(0, 10) + (a.part.endsWith("утро") ? "0" : "1") < b.part.slice(0, 10) + (b.part.endsWith("утро") ? "0" : "1") ? -1 : 1));
+  [...done, ...(pend.length && done.length ? [{ sep: true }] : []), ...pend].forEach((r) => {
+    if (r.sep) { const sp = el("div", "logrow"); sp.style.cssText = "font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding-top:14px"; sp.append(el("span", null, `${t("verdicts").pending || ""} · ${pend.length}`)); box.append(sp); return; }
     const [d, w] = r.part.split(" "), row = el("div", "logrow");
     row.append(el("span", null, `${dayLabel(d, true)} · ${w === "утро" ? t("morn") : t("eve")} · ${t("lead_d")(r.lead)}`), el("span", "num mono", pct(r.risk)), el("span", `verdict v-${r.verdict}`, t("verdicts")[r.verdict] || r.verdict));
     box.append(row);
