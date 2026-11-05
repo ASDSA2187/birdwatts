@@ -1490,7 +1490,7 @@ function renderMoney() {
     box.replaceChildren(...rows.map((r) => { const d = el("div", "hbar"), tr = el("div", "t"), i = el("i"); i.style.width = `${(val(r) / mx) * 100}%`; i.style.background = color(r); tr.append(i);
       d.append(el("span", "mono", lbl(r)), tr, el("span", "val", fmtv(r))); return d; })); };
   bars("m-hours", DATA.hours, (r) => r.hours, (r) => r.year, () => "var(--cobalt)", (r) => `${fmt(r.hours)} ${t("h")}`);
-  bars("m-loss", DATA.loss_meur, (r) => r.meur, (r) => r.year, () => "var(--stop)", (r) => `${fmt(r.meur, 1)} ${t("meur")}`);
+  bars("m-loss", DATA.loss_meur, (r) => r.meur, (r) => r.year, () => "var(--stop)", (r) => `${r.counted != null && r.counted < r.windows ? "≥ " : ""}${fmt(r.meur, 1)} ${t("meur")}`);   // «≥»: часть окон года ещё не посчитана
   const box = document.getElementById("m-price"); box.replaceChildren();
   const mx = Math.max(...DATA.zones.map((z) => z.on_stop));
   DATA.zones.forEach((z) => { const d = el("div", "hbar"), tr = el("div", "t"); tr.style.position = "relative";
