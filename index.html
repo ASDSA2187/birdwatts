@@ -1059,9 +1059,9 @@ pt: {
   wallet_tbd: "O endereço aparece quando os pagamentos estiverem configurados", qr_none: "O QR aparece com o endereço", logout: "Sair",
   spring: "primavera", autumn: "outono", load_fail: "Não foi possível carregar os dados. Recarregue a página." },
 });
-const LANGS = [["ru", "Русский", "ru-RU"], ["en", "English", "en-GB"], ["de", "Deutsch", "de-DE"], ["nl", "Nederlands", "nl-NL"], ["fr", "Français", "fr-FR"],
+const LANGS = [["en", "English", "en-GB"], ["de", "Deutsch", "de-DE"], ["nl", "Nederlands", "nl-NL"], ["fr", "Français", "fr-FR"],
   ["sv", "Svenska", "sv-SE"], ["da", "Dansk", "da-DK"], ["nb", "Norsk", "nb-NO"], ["fi", "Suomi", "fi-FI"], ["pl", "Polski", "pl-PL"],
-  ["es", "Español", "es-ES"], ["it", "Italiano", "it-IT"], ["pt", "Português", "pt-PT"]];
+  ["es", "Español", "es-ES"], ["ru", "Русский", "ru-RU"], ["it", "Italiano", "it-IT"], ["pt", "Português", "pt-PT"]];
 const COOP = {
 ru: { nav_access: "Сотрудничество", cta_pilot: "Запросить пилот", lock_p: "Живые сигналы на ближайшие ночи открыты партнёрам пилота. Прошлые сигналы — в журнале ниже, их можно сверить с решениями регулятора.",
   acc_eyebrow: "Сотрудничество", acc_title: "Как начать работу", acc_sub: "Сначала пилот в сезонное окно, затем договор. Оплата по счёту, условия фиксируются в договоре.",
@@ -1242,7 +1242,7 @@ Object.keys(MK).forEach((L) => Object.assign(T[L], MK[L]));
 /* ---------------- состояние ---------------- */
 const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* хранилище недоступно */ } } };
 const pickLang = () => { const codes = LANGS.map((l) => l[0]); const nav = (navigator.languages || [navigator.language || "en"]).map((x) => x.toLowerCase().split("-")[0]).map((x) => (x === "no" || x === "nn" ? "nb" : x));
-  return nav.find((x) => codes.includes(x)) || "en"; };
+  return nav.find((x) => codes.includes(x) && x !== "ru") || "en"; };   // английский — главный; русский только по выбору
 let lang = (() => { const s = store.get("bw_lang"); return s && T[s] ? s : pickLang(); })();
 let DATA = null;
 const LIVE = location.hash === "#live";   // живые сигналы видны только по ссылке с #live (для показа владельцем)
@@ -1279,7 +1279,7 @@ const TRD = {
   pt: { tr_h: "Com e sem BirdWatt: rendimento de um trader", tr_n: "Um trader com 100 000 € compra as horas de cada noite com sinal «comprar antecipadamente» ao preço normal e vende-as no leilão day-ahead. Um trader comum faz o mesmo número de operações em noites da época ao acaso. Acumulado, milhares de €.", tr_k: "milhares de €", tr_k1: (c) => `com BirdWatt; prudente (o mercado antecipou metade do prémio) — ${c}`, tr_k2: (lo, hi) => `trader comum, mediana; 80% dos resultados entre ${lo} e ${hi}`, tr_k3: (d, o) => `noites com sinal sem paragem — mesmo assim ${d} €/MWh face ao normal (outras noites ${o} €)`, tr_bw: "Com BirdWatt", tr_caut: "Cenário prudente", tr_med: "Trader comum (mediana)", tr_band: "80% dos resultados sem sinal", tr_period: (a, b, n, l, u) => `Período: ${a} — ${b} · operações com sinal: ${n}${l ? ` · do registo ao vivo: ${l}` : ''} · atualizado ${u}. A curva atualiza-se após cada nova noite.`, kp_period: (a, b, n, u) => `Período: ${a} — ${b} · incl. ${n} noites do diário ao vivo · atualizado ${u}. As novas noites entram automaticamente.`, lead_d: (n) => `previsão a ${n} d`, tr_today: "hoje", tr_ahead: (d) => `temporada em curso — até ${d}`, nav_profit: "Rendimento", pf_eyebrow: "Resultado histórico", tr_note: "Estimativa em papel: compra ao preço das noites vizinhas, venda no leilão day-ahead, comissão 1 €/MWh, sem alavancagem; sem liquidez nem instrumentos. Resultados passados não garantem resultados futuros." },
 };
 Object.entries(TRD).forEach(([L, o]) => { if (T[L]) Object.assign(T[L], o); });
-const locale = () => (LANGS.find((l) => l[0] === lang) || LANGS[1])[2];
+const locale = () => (LANGS.find((l) => l[0] === lang) || LANGS[0])[2];
 const fmt = (n, d = 0) => (n == null ? "—" : new Intl.NumberFormat(locale(), { maximumFractionDigits: d, minimumFractionDigits: d }).format(n));
 const pct = (x) => (x == null ? "—" : `${Math.round(x * 100)}%`);
 const sign = (n) => (n == null ? "—" : `${n > 0 ? "+" : ""}${fmt(n, 1)}`);
